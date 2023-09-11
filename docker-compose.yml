@@ -2,12 +2,35 @@ version: '3'
 
 services:
   db:
-    container_name: 'pongporn-postgres'
-    image: 'pongporn:latest'
+    container_name: pongporn-postgres
+    image: postgres:latest
     ports:
-      -54322:54322
+      - 54322:5432
     environment:
-      -POSTGRES_USER=${DB_USER}
-      -POSTGRES_PASSWORD=${DB_PASS}
-    image: postgres:14.4
-    restart: 'unless-stopped'
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_USER=${DB_USER}
+    restart: unless-stopped
+  pgadmin:
+    container_name: pongporn-pgadmin
+    image: dpage/pgadmin4:latest
+    ports:
+      - 8080:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PG_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PG_PASS}
+    restart: unless-stopped
+  strapi:
+    container_name: pongporn-strapi
+    image: naskio/strapi:latest
+    ports:
+      - 1337:1337
+    environment:
+      - DATABASE_CLIENT=${DB_CLIENT}
+      - DATABASE_HOST=${DB_HOST}
+      - DATABASE_PORT=${DB_PORT}
+      - DATABASE_NAME=${DB_NAME}
+      - DATABASE_USERNAME=${DB_USERNAME}
+      - DATABASE_PASSWORD=${DB_PASSWORD}
+      - DATABASE_SSL=${DB_SSL}
+  restart: unless-stopped
+  
